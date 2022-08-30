@@ -449,7 +449,7 @@ ui.setupUi(Form)
 
 import idaapi
 
-class myplugin_t(idaapi.plugin_t):
+class interesting_imports_class(idaapi.plugin_t):
 
     flags = idaapi.PLUGIN_UNL
     comment = "This plugin shows the most interesting imports"
@@ -458,7 +458,7 @@ class myplugin_t(idaapi.plugin_t):
     wanted_hotkey = "Ctrl+Shift+I"
 
     def init(self):
-        # idaapi.msg("init() called!\n")
+        idaapi.msg("INTERESTING IMPORTS init() called!\n")
         return idaapi.PLUGIN_OK
     def run(self, arg):
         Form.show()
@@ -470,7 +470,7 @@ class myplugin_t(idaapi.plugin_t):
         pass
 
 def PLUGIN_ENTRY():
-    return myplugin_t()
+    return interesting_imports_class()
 
 
 
