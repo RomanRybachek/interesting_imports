@@ -9,7 +9,7 @@ import idaapi
 
 config = {
 
-"Processes": ['CreateToolhelp32Snapshot', 'Process32First', 'Process32FirstW', 'Process32Next', 'Process32NextW', 'WriteProcessMemory', 
+"Processes": ['GetTokenInformation', 'GetCurrentProcess', 'OpenProcessToken', 'CreateToolhelp32Snapshot', 'Process32First', 'Process32FirstW', 'Process32Next', 'Process32NextW', 'WriteProcessMemory', 
             'ReadProcessMemory', 'Toolhelp32ReadProcessMemory', 'Module32First', 'Module32FirstW', 'Module32Next', 'Module32NextW', 'CreateProcessW'],
 
 "Co": ['CoCreateInstance'],
