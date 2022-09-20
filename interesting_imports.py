@@ -6,6 +6,8 @@ import idautils
 import ida_funcs
 import ida_name
 import idaapi
+import idc
+import ida_bytes
 
 config = {
 
@@ -423,13 +425,41 @@ def refresh_xrefs():
             imp_obj = g_obj.get_import(imp_name)
 
             if imp_obj != None:
-                current_xref = ida_xref.get_first_cref_to(ea)
 
-                while (current_xref != idaapi.BADADDR):
-                    imp_obj.xrefs.append([ida_funcs.get_func_name(current_xref), "0x%x" % current_xref])
-                    imp_obj.num_of_xrefs += 1
-                    current_xref = ida_xref.get_next_cref_to(ea, current_xref)
+                xrefs_to = idautils.XrefsTo(ea, ida_xref.XREF_ALL)
+                xrefs_to_list = []
+                for i in xrefs_to:
+                    xrefs_to_list.append(i)
 
+                # print(imp_name, hex(ea), len(xrefs_to_list), 1, flush=True)
+
+                if len(xrefs_to_list) == 1 and ida_funcs.calc_func_size(ida_funcs.get_func(xrefs_to_list[0].frm)) == 6:
+                    wrap_xref = xrefs_to_list[0].frm
+                    wrap_xrefs_to = idautils.XrefsTo(wrap_xref, ida_xref.XREF_ALL)
+                    wrap_xrefs_to_list = []
+                    for i in wrap_xrefs_to:
+                        wrap_xrefs_to_list.append(i)
+
+                    for xref in wrap_xrefs_to_list:
+                        name = ida_funcs.get_func_name(xref.frm)
+                        # print("       ", name, hex(xref.frm), 2, flush=True)
+                        if idc.is_code(ida_bytes.get_flags(xref.frm)):
+                            imp_obj.xrefs.append([name, "0x%x" % xref.frm])
+                            imp_obj.num_of_xrefs += 1
+                else:
+                    for xref in xrefs_to_list:
+                        name = ida_funcs.get_func_name(xref.frm)
+                        # print("       ", name, hex(xref.frm), 2, flush=True)
+                        if idc.is_code(ida_bytes.get_flags(xref.frm)):
+                            imp_obj.xrefs.append([name, "0x%x" % xref.frm])
+                            imp_obj.num_of_xrefs += 1
+                #----------------
+                # current_xref = ida_xref.get_first_cref_to(ea)
+                # while (current_xref != idaapi.BADADDR):
+                #     imp_obj.xrefs.append([ida_funcs.get_func_name(current_xref), "0x%x" % current_xref])
+                #     imp_obj.num_of_xrefs += 1
+                #     current_xref = ida_xref.get_next_cref_to(ea, current_xref)
+                #-------------------
             return True
 
         ida_nalt.enum_import_names(i, imp_cb)
